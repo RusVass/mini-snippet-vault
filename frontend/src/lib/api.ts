@@ -12,6 +12,16 @@ if (!API_URL) {
   throw new Error('NEXT_PUBLIC_API_URL is not defined');
 }
 
+export class ApiError extends Error {
+  public readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 const buildQueryString = (params: GetSnippetsParams): string => {
   const searchParams = new URLSearchParams();
 
@@ -44,12 +54,16 @@ const parseResponse = async <T>(response: Response): Promise<T> => {
 
     try {
       const errorData = await response.json();
-      errorMessage = errorData.message || errorMessage;
+      if (Array.isArray(errorData.message) && errorData.message.length > 0) {
+        errorMessage = errorData.message.join(', ');
+      } else if (typeof errorData.message === 'string' && errorData.message) {
+        errorMessage = errorData.message;
+      }
     } catch {
       errorMessage = response.statusText || errorMessage;
     }
 
-    throw new Error(errorMessage);
+    throw new ApiError(errorMessage, response.status);
   }
 
   return response.json();

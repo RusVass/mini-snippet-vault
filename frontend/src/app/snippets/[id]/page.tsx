@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DeleteSnippetButton } from '@/components/snippets/delete-snippet-button';
-import { getSnippetById } from '@/lib/api';
+import { ApiError, getSnippetById } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
 
 interface SnippetPageProps {
@@ -14,11 +14,36 @@ const SnippetPage = async ({ params }: SnippetPageProps): Promise<JSX.Element> =
   const { id } = await params;
 
   let snippet = null;
+  let errorText = '';
 
   try {
     snippet = await getSnippetById(id);
-  } catch {
-    notFound();
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+
+    if (error instanceof Error) {
+      errorText = error.message;
+    } else {
+      errorText = 'Failed to load snippet';
+    }
+  }
+
+  if (errorText) {
+    return (
+      <main className="min-h-screen bg-slate-50">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <Link href="/" className="text-sm text-slate-600 hover:underline">
+            ← Back
+          </Link>
+
+          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {errorText}
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
