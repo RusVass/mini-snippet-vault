@@ -1,49 +1,6 @@
 # Mini Snippet Vault
 
-Mini Snippet Vault is a small full-stack application for saving useful snippets such as links, notes, and commands.
-It supports tags, search, filtering, and pagination.
-
-## Stack
-
-- Next.js App Router, TypeScript, Tailwind CSS
-- NestJS, TypeScript
-- MongoDB via Mongoose
-- Validation with class-validator and class-transformer
-
-## Features
-
-- CRUD operations for Snippet
-- Search by title and content
-- Filter by tag and snippet type
-- Pagination using page and limit
-- UI states for loading, empty, and error
-- Basic frontend form validation
-
-## Project structure
-
-```txt
-mini-snippet-vault/
-  backend/
-  frontend/
-  README.md
-```
-
-## Snippet entity
-
-Fields:
-
-- title
-- content
-- tags
-- type
-- createdAt
-- updatedAt
-
-type values:
-
-- link
-- note
-- command
+Small full-stack application for storing snippets, links, notes, and commands.
 
 ## Local setup
 
@@ -159,23 +116,4 @@ cd frontend
 npm run build
 npm run start
 ```
-
-## Implementation notes
-
-Backend:
-
-- DTO validation using ValidationPipe
-- Proper 400 and 404 error handling
-- Modular NestJS structure
-
-Database:
-
-- Mongoose schema with timestamps
-- Text index on title and content for search
-
-Frontend:
-
-- Integration with API using fetch
-- Pages for list, details, and editing
-- Clean Tailwind UI with basic validation
 
