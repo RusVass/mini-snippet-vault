@@ -46,6 +46,22 @@ const SnippetPage = async ({ params }: SnippetPageProps): Promise<JSX.Element> =
     );
   }
 
+  if (!snippet) {
+    return (
+      <main className="min-h-screen bg-slate-50">
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <Link href="/" className="text-sm text-slate-600 hover:underline">
+            ← Back
+          </Link>
+
+          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            Failed to load snippet
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-3xl px-4 py-10">
