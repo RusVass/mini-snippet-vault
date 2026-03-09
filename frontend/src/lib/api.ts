@@ -48,16 +48,34 @@ const buildQueryString = (params: GetSnippetsParams): string => {
   return searchParams.toString();
 };
 
+const getErrorMessage = (errorData: unknown): string => {
+  if (!errorData || typeof errorData !== 'object') {
+    return '';
+  }
+
+  const candidate = (errorData as { message?: unknown }).message;
+
+  if (Array.isArray(candidate) && candidate.length > 0) {
+    return candidate.join(', ');
+  }
+
+  if (typeof candidate === 'string') {
+    return candidate;
+  }
+
+  return '';
+};
+
 const parseResponse = async <T>(response: Response): Promise<T> => {
   if (!response.ok) {
     let errorMessage = 'Request failed';
 
     try {
       const errorData = await response.json();
-      if (Array.isArray(errorData.message) && errorData.message.length > 0) {
-        errorMessage = errorData.message.join(', ');
-      } else if (typeof errorData.message === 'string' && errorData.message) {
-        errorMessage = errorData.message;
+      const parsedMessage = getErrorMessage(errorData);
+
+      if (parsedMessage) {
+        errorMessage = parsedMessage;
       }
     } catch {
       errorMessage = response.statusText || errorMessage;
