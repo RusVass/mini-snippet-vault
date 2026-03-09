@@ -17,15 +17,15 @@ export const EditSnippetForm = ({ snippet }: EditSnippetFormProps): JSX.Element 
   const [content, setContent] = useState(snippet.content);
   const [tags, setTags] = useState(snippet.tags.join(', '));
   const [type, setType] = useState<SnippetType>(snippet.type);
-  const [error, setError] = useState('');
+  const [errorText, setErrorText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
-    setError('');
+    setErrorText('');
 
     if (!title.trim() || !content.trim()) {
-      setError('Title and content are required');
+      setErrorText('Title and content are required');
       return;
     }
 
@@ -40,8 +40,12 @@ export const EditSnippetForm = ({ snippet }: EditSnippetFormProps): JSX.Element 
 
       router.push(`/snippets/${snippet._id}`);
       router.refresh();
-    } catch {
-      setError('Update failed');
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrorText(error.message);
+      } else {
+        setErrorText('Update failed');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +86,7 @@ export const EditSnippetForm = ({ snippet }: EditSnippetFormProps): JSX.Element 
         <option value="command">Command</option>
       </select>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {errorText ? <p className="text-sm text-red-600">{errorText}</p> : null}
 
       <button
         type="submit"
